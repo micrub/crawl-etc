@@ -12,15 +12,18 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
-app.post(function(req, res) {
-  let {url} = req.body;
-  if (url) {
+app.post('/parse', function(req, res) {
+  console.log(req.body);
+  let url = req.body.url;
+  if (url.length === 0) {
     throw new Error("Supplied 'url' property must not be empty");
   }
+  console.log(url);
   const job = lib.addJob(url);
-  res.end(`Job started ${job}`);
-  
-
+  res.status(200);
+  res.json({
+    message: `Job started ${job}`,
+  });
 })
 
 // catch 404 and forward to error handler
@@ -35,8 +38,10 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  res.status(500).json({
+    message: err.message,
+    error: err
+  });
 });
 
 module.exports = app;
