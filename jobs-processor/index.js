@@ -1,7 +1,8 @@
 const { doesNotMatch } = require('assert');
+const urll = require('url');
 var
   cluster = require('cluster');
-const { storeUrlContent, storeUrlLinks, parseUrl } = require('../lib');
+const { storeUrlContent, storeUrlLinks, parseUrl, addJob } = require('../lib');
 const lib = require('../lib');
 const debug = require('debug')('job-processor:');
 var numWorkers = 8;
@@ -28,9 +29,16 @@ if(cluster.isMaster){
             storeUrlContent(parsed, function(err) {
                storeUrlLinks(parsed, (err2) => {
                   parsed.links.forEach(link => {
-                    // TODO Dont add if path depth is larger than five
+                    //  Dont add if path depth is larger than 5
                     // TODO Dont add if have sublink in sublinks set
-                    queue.add({url: link});
+                    let pathn = urll.parse(link).pathname;
+                    
+                    pathn = pathn.split('/')
+                    
+                    if(pathn.length < 5){
+                      debug(pathn, 'adding link job for', link);
+                      addJob({url: link});
+                    }
                   });
                });
             });

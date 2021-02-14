@@ -19,7 +19,7 @@ app.post('/parse', function(req, res) {
     throw new Error("Supplied 'url' property must not be empty");
   }
   console.log(url);
-  const job = lib.addJob(url);
+  const job = lib.addJob({url});
   res.status(200);
   res.json({
     message: `Job started ${job}`,
