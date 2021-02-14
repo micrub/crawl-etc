@@ -1,0 +1,15 @@
+{
+  "name": "crawl-etc",
+  "version": "1.0.0",
+  "description": "* as an application it should be broken down to scalable components  * as an application it should handle an API request that triggers a crawl-worker job for specified url  * as an application it should store parsed url contetnt and sublinks in persestend database",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx mocha test"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.3.0",
+    "mocha": "^8.3.0"
+  }
+}
