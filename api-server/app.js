@@ -17,12 +17,9 @@ app.post(function(req, res) {
   if (url) {
     throw new Error("Supplied 'url' property must not be empty");
   }
-  lib.triggerJob(url, function(err, jobid) {
-    if(err){
-      throw err;
-    }
-    res.end(`Job started ${jobid}`);
-  });
+  const job = lib.addJob(url);
+  res.end(`Job started ${job}`);
+  
 
 })
 
