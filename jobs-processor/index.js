@@ -18,34 +18,31 @@ if(cluster.isMaster){
   });
 }else{
   queue.process(function(job, jobDone){
-    if(!lib.getUrlContent(job.data)){
-        let {content, links} = parseUrl();
-        storeUrlContent(content);
-        storeUrlLinks(links);
-        job.data.links.forEach(link => {
-            // TODO Dont add if path depth is larger than five
-            // TODO Dont add if have sublink in sublinks set
-            queue.add({url: link});
-        });
-        debug(job);
-        jobDone(null, 'Done storing and putting sub links to job queue');
-    }else {
-        jobDone(new Error('url is already stored'));
-    }
-      // // job.data contains the custom data passed when the job was created
-      // // job.id contains id of this job.
     
-      // // transcode video asynchronously and report progress
-      // job.progress(42);
+      lib.getUrlContent(job.data, (err, result) => {
+        
+        if(!result){
+         
+            let parsed = parseUrl(job.data.url);
+            debug(job.data, parsed)
+            storeUrlContent(parsed, function(err) {
+               storeUrlLinks(parsed, (err2) => {
+                  parsed.links.forEach(link => {
+                    // TODO Dont add if path depth is larger than five
+                    // TODO Dont add if have sublink in sublinks set
+                    queue.add({url: link});
+                  });
+               });
+            });
+            
+            jobDone(null, 'Done storing and putting sub links to job queue');
+        }else {
+            jobDone(new Error('url is already stored'));
+        }
+      });
+      
     
-      // // call done when finished
-      // done();
     
-      // // or give a error if error
-      // done(new Error('error transcoding'));
-    
-      // // or pass it a result
-      // done(null, { framerate: 29.5 /* etc... */ });
-
+   
   });
 }
