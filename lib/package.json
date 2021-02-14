@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bull": "^3.20.1"
+    "bull": "^3.20.1",
+    "redis": "^3.0.2"
   },
   "devDependencies": {
     "chai": "^4.3.0",
